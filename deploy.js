@@ -5,7 +5,7 @@
 // cd OpenUserJS.org
 // jitsu login
 // Copy this file into the directory
-// node app.js &
+// node deploy.js &
 
 var express = require('express');
 var spawn = require('child_process').spawn;
@@ -49,13 +49,12 @@ app.post('/', function (req, res) {
   if (ghPath === username + '/' + reponame) {
     // git pull origin master
     // jitsu deploy
-    git = spawn('git', ['pull', 'origin', 'master']);
+    git = spawn('git', ['pull', '-f', 'origin', 'master']);
     git.on('close', function (code) {
-      jitsu = spawn('jitsu', ['deploy']);
+      jitsu = spawn('jitsu', ['-c', 'deploy']);
       jitsu.on('close', function(code) {
         return;
       });
     });
   }
 });
-
