@@ -47,13 +47,15 @@ app.post('/', function (req, res) {
   reponame = payload.repository.name;
 
   if (ghPath === username + '/' + reponame) {
+    // git rest --hard
     // git pull origin master
     // jitsu deploy
-    git = spawn('git', ['pull', '-f', 'origin', 'master']);
+    git = spawn('git', ['reset', '--hard']);
     git.on('close', function (code) {
-      jitsu = spawn('jitsu', ['-c', 'deploy']);
-      jitsu.on('close', function(code) {
-        return;
+      git = spawn('git', ['pull', '-f', 'origin', 'master']);
+      git.on('close', function (code) {
+        jitsu = spawn('jitsu', ['-c', 'deploy']);
+        jitsu.on('close', function(code) { return; });
       });
     });
   }
